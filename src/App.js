@@ -1,24 +1,40 @@
-import logo from './logo.svg';
+import React, { useReducer, createContext } from 'react';
+import Playground from './components/Playground/Playground';
+import Display from './components/Display/Display';
+
 import './App.css';
 
+export const CodeContext = createContext();
+
+const initialState = {
+  "html": "",
+  "css": "",
+  "js": ""
+};
+const reducer = (state, action) => {
+  console.log(action)
+  switch (action.type) {
+    case 'saveHtml':
+      return { ...state, "html": action.code }
+    case 'saveCss':
+      return { ...state, "css": action.code }
+    case 'saveJs':
+      return { ...state, "js": action.code }
+    default:
+      return state;
+  }
+}
+
 function App() {
+  const [code, dispatch] = useReducer(reducer, initialState)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <CodeContext.Provider value={{ code, dispatchCode: dispatch }}>
+      <div className="App">
+        <Playground />
+        <Display />
+      </div>
+    </CodeContext.Provider>
   );
 }
 

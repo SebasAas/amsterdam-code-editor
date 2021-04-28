@@ -1,70 +1,72 @@
-# Getting Started with Create React App
+# Size Limit [![Code Editor]][cult]
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<img src="https://ai.github.io/size-limit/logo.svg" align="right"
+     alt="Size Limit logo by Anton Lovchikov" width="120" height="178">
 
-## Available Scripts
+Size Limit is a performance budget tool for JavaScript. It checks every commit
+on CI, calculates the real cost of your JS for end-users and throws an error
+if the cost exceeds the limit.
 
-In the project directory, you can run:
+* **ES modules** and **tree-shaking** support.
+* Add Size Limit to **Travis CI**, **Circle CI**, **GitHub Actions**
+  or another CI system to know if a pull request adds a massive dependency.
+* **Modular** to fit different use cases: big JS applications
+  that use their own bundler or small npm libraries with many files.
+* Can calculate **the time** it would take a browser
+  to download and **execute** your JS. Time is a much more accurate
+  and understandable metric compared to the size in bytes.
+* Calculations include **all dependencies and polyfills**
+  used in your JS.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+With **[GitHub action]** Size Limit will post bundle size changes as a comment
+in pull request discussion.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+With `--why`, Size Limit can tell you *why* your library is of this size
+and show the real cost of all your internal dependencies.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+[GitHub action]: https://github.com/andresz1/size-limit-action
+[cult-img]:      http://cultofmartians.com/assets/badges/badge.svg
+[cult]:          http://cultofmartians.com/tasks/size-limit-config.html
 
-### `npm run eject`
+## Who Uses Size Limit
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+* [MobX](https://github.com/mobxjs/mobx)
+* [Material-UI](https://github.com/callemall/material-ui)
+* [Autoprefixer](https://github.com/postcss/autoprefixer)
+* [PostCSS](https://github.com/postcss/postcss) reduced
+  [25% of the size](https://github.com/postcss/postcss/commit/150edaa42f6d7ede73d8c72be9909f0a0f87a70f).
+* [Browserslist](https://github.com/ai/browserslist) reduced
+  [25% of the size](https://github.com/ai/browserslist/commit/640b62fa83a20897cae75298a9f2715642531623).
+* [EmojiMart](https://github.com/missive/emoji-mart) reduced
+  [20% of the size](https://github.com/missive/emoji-mart/pull/111)
+* [nanoid](https://github.com/ai/nanoid) reduced
+  [33% of the size](https://github.com/ai/nanoid/commit/036612e7d6cc5760313a8850a2751a5e95184eab).
+* [React Focus Lock](https://github.com/theKashey/react-focus-lock) reduced
+  [32% of the size](https://github.com/theKashey/react-focus-lock/pull/48).
+* [Logux](https://github.com/logux) reduced
+  [90% of the size](https://github.com/logux/logux-client/commit/62b258e20e1818b23ae39b9c4cd49e2495781e91).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## How It Works
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Size Limit contains a CLI tool, 3 plugins (`file`, `webpack`, `time`)
+   and 3 plugin presets for popular use cases (`app`, `big-lib`, `small-lib`).
+   A CLI tool finds plugins in `package.json` and loads the config.
+2. If you use the `webpack` plugin, Size Limit will bundle your JS files into
+   a single file. It is important to track dependencies and webpack polyfills.
+   It is also useful for small libraries with many small files and without
+   a bundler.
+3. The `webpack` plugin creates an empty webpack project, adds your library
+   and looks for the bundle size difference.
+4. The `time` plugin compares the current machine performance with that of
+   a low-priced Android devices to calculate the CPU throttling rate.
+5. Then the `time` plugin runs headless Chrome (or desktop Chrome if it’s
+   available) to track the time a browser takes to compile and execute your JS.
+   Note that these measurements depend on available resources and might
+   be unstable.
