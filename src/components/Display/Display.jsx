@@ -8,6 +8,24 @@ function Display() {
   const { html, css, js } = code
 
   useEffect(() => {
+    removePositionDynamic()
+  }, [])
+
+  const removePositionDynamic = () => {
+    const styles = iframe.current.style.position
+    if (!styles) {
+      setTimeout(() => {
+        removePositionDynamic()
+      }, 200);
+
+    } else {
+      if (styles === "absolute") {
+        iframe.current.style.position = "initial"
+      }
+    }
+  }
+
+  useEffect(() => {
     runCode();
   }, [code])
 

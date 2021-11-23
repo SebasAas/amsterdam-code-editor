@@ -12,7 +12,6 @@ const initialState = {
   "js": ""
 };
 const reducer = (state, action) => {
-  console.log(action)
   switch (action.type) {
     case 'saveHtml':
       return { ...state, "html": action.code }
